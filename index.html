@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time data with Symfony applications - 17th Symfony Bucharest Meetup</title>
+    <meta charset="utf-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<textarea id="source">
+    class: center, middle
+
+    # Real-time data with Symfony applications
+
+    ## 17th Symfony Bucharest Meetup
+
+    ---
+    class: center, middle
+
+    # Mihai Nica
+
+    ## CTO @ Wise Systems
+
+    Working with PHP for 14+ years, Symfony early adopter (since 2.0 alpha).
+
+    ---
+    class: middle
+
+    # What we'll talk about
+
+    1. Need for real-time data
+    1. How to do it
+    1. Conclusions
+
+    ---
+    class: middle
+
+    # Real-time data
+
+    ## Users expect real-time data
+
+    1. Notification
+    1. Activity streams
+    1. Data visualization (dashboards :D)
+    1. Chat
+    1. Real-time location tracking
+    1. Multi-user collaboration
+
+    ---
+    class: middle
+
+    # How to do it
+
+    1. Short/long pooling (the legacy way).
+    1. WebSockets
+    1. Server Sent Events (SSE)
+
+    ---
+    class: middle
+
+    # Pooling
+
+    ```javascript
+    function doPoll(){
+        $.post('ajax/test.html', function(data) {
+            updatePage(data);
+            setTimeout(doPoll,5000);
+        });
+    }
+    ```
+
+    ---
+    class: middle
+
+    # WebSockets
+
+    ## Client
+
+    ```javascript
+    var exampleSocket = new WebSocket("wss://example.com/sock", ["x-chat"]);
+
+    // react to services
+    exampleSocket.onmessage = function (event) {
+      console.log(event.data);
+    }
+
+    // send
+    exampleSocket.send("Here's some text that the server is urgently awaiting!");
+    ```
+
+    ---
+    class: middle
+
+    # WebSockets
+
+    ## Server
+
+
+    ```php
+    // Run the server application through the WebSocket protocol on port 8080
+    $app = new Ratchet\App('localhost', 8080);
+    $app->route('/chat', new MyChat, array('*'));
+    $app->route('/echo', new Ratchet\Server\EchoServer, array('*'));
+    $app->run();
+    ```
+
+    ---
+    class: middle
+
+    # Server Sent Events
+
+    ```javascript
+    var evtSource = new EventSource("/api.example.com/sse");
+
+    evtSource.onmessage = function(e) {
+      var newElement = document.createElement("li");
+      var eventList = document.getElementById('list');
+
+      newElement.innerHTML = "message: " + e.data;
+      eventList.appendChild(newElement);
+    }
+
+    ```
+
+    ---
+    class: middle
+
+    # Mercure
+
+    ![Mercure](img/mercure.png)
+
+    ---
+    class: middle
+
+    # Server Sent Events
+
+    ```php
+    // change these values accordingly to your hub installation
+    define('HUB_URL', 'https://demo.mercure.rocks/hub');
+    define('JWT', 'XJlIjp7InN1YnNjcmliZSI6WyJmb28iLCJiYX...');
+
+    use Symfony\Component\Mercure\Publisher;mercure.pngmercure.png
+    use Symfony\Component\Mercure\Update;
+    use Symfony\Component\Mercure\Jwt\StaticJwtProvide;
+
+    $publisher = new Publisher(HUB_URL, new StaticJwtProvide(JWT));
+    // Serialize the update, and dispatch it to the hub, that will broadcast it to the clients
+    $id = $publisher(new Update('https://example.com/books/1.jsonld', 'Hi from Symfony!', ['target1']));
+    ```
+
+    ---
+    class: middle
+
+    # Thank you
+
+    ## @redecs
+
+</textarea>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
+<script>
+    var slideshow = remark.create();
+</script>
+</body>
+</html>
