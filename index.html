@@ -73,6 +73,11 @@
     ---
     class: middle
 
+    ![WebSockets](img/websockets_symfony_ratchet.png)
+
+    ---
+    class: middle
+
     # WebSockets
 
     ## Client
@@ -108,39 +113,43 @@
     ---
     class: middle
 
+    ![Mercure](img/mercure.png)
+
+    ---
+
+    class: middle
+
     # Server Sent Events
 
+    ## Client
+
     ```javascript
-    var evtSource = new EventSource("/api.example.com/sse");
+    // The subscriber subscribes to updates for the https://example.com/users/dunglas topic
+    // and to any topic matching https://example.com/books/{id}
+    const url = new URL('https://example.com/hub');
+    url.searchParams.append('topic', 'https://example.com/books/{id}');
+    url.searchParams.append('topic', 'https://example.com/users/dunglas');
 
-    evtSource.onmessage = function(e) {
-      var newElement = document.createElement("li");
-      var eventList = document.getElementById('list');
+    const eventSource = new EventSource(url);
 
-      newElement.innerHTML = "message: " + e.data;
-      eventList.appendChild(newElement);
-    }
+    // The callback will be called every time an update is published
+    eventSource.onmessage = e => console.log(e); // do something with the payload
 
     ```
 
     ---
     class: middle
 
-    # Mercure
-
-    ![Mercure](img/mercure.png)
-
-    ---
-    class: middle
-
     # Server Sent Events
+
+    ## Server
 
     ```php
     // change these values accordingly to your hub installation
     define('HUB_URL', 'https://demo.mercure.rocks/hub');
     define('JWT', 'XJlIjp7InN1YnNjcmliZSI6WyJmb28iLCJiYX...');
 
-    use Symfony\Component\Mercure\Publisher;mercure.pngmercure.png
+    use Symfony\Component\Mercure\Publisher;
     use Symfony\Component\Mercure\Update;
     use Symfony\Component\Mercure\Jwt\StaticJwtProvide;
 
@@ -155,6 +164,17 @@
     # Thank you
 
     ## @redecs
+
+    ---
+    class: middle
+
+    # Reference
+
+    - https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+    - https://github.com/ratchetphp/Ratchet
+    - https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
+    - https://mercure.rocks
+    - https://symfony.com/doc/current/mercure.html
 
 </textarea>
 
